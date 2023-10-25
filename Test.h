@@ -7,37 +7,66 @@
 #include <vector>
 namespace TDD
 {
-    class TestInterface
+    class TestBase
     {
     public:
-        virtual ~TestInterface() = default;
+        TestBase (std::string_view name)
+        : nName(name), mPassed(true)
+        {}
+
+        virtual ~TestBase() = default;
         virtual void run () = 0;
+
+        std::string_view name () const
+        {
+            return nName;
+        }
+        bool passed () const
+        {
+            return mPassed;
+        }
+
+        std::string_view reason () const
+        {
+            return mReason;
+        }
+        void setFailed (std::string_view reason)
+        {
+            mPassed = false;
+            mReason = reason;
+        }
+    private:
+        std::string nName;
+        bool mPassed;
+        std::string mReason;
     };
-    inline std::vector<TestInterface *> & getTests (){
-        static std::vector<TestInterface *> tests;
+    inline std::vector<TestBase *> & getTests (){
+        static std::vector<TestBase *> tests;
         return tests;
     }
     inline void runTests ()
     {
         for (auto * test: getTests())
         {
-            test->run();
+            try {
+                test->run();
+            }
+            catch (...)
+            {
+                test->setFailed("Unexpected exception thrown.");
+            }
         }
     }
 } // namespace TDD
 
-#define TEST \
-class Test : public TDD::TestInterface \
+#define TEST( testName ) \
+class Test : public TDD::TestBase \
 { \
 public: \
     Test (std::string_view name) \
-            : nName(name), mResult(true) \
+            : testBase(name) \
     { TDD::getTests().push_back(this);} \
     void run () override; \
-private: \
-    std::string nName; \
-    bool mResult; \
 }; \
-Test test("testCanBeCreated"); \
 void Test::run ()
 #endif //INC_01_TEST_H
