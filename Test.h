@@ -13,6 +13,9 @@ namespace TDD {
 
     class ConfirmException {
     public:
+        ConfirmException (int line)
+        : mLine(line) {}
+
         ConfirmException() = default;
 
         virtual ~ConfirmException() = default;
@@ -20,9 +23,13 @@ namespace TDD {
         std::string_view reason() const {
             return mReason;
         }
+        int line () const {
+            return mLine;
+        }
 
     protected:
         std::string mReason;
+        int mLine;
     };
 
     class BoolConfirmException : public ConfirmException {
@@ -33,6 +40,27 @@ namespace TDD {
             mReason += "  Expected: ";
             mReason += expected ? "true" : "false";
         }
+    };
+
+    class ActualConfirmException : public ConfirmException {
+    public:
+        ActualConfirmException(int expected, int actual, int line)
+        : mExpected(std::to_string(expected)),
+          mActual(std::to_string(actual)),
+          mLine(line)
+        {
+            formatReason();
+        }
+    private:
+        void formatReason() {
+            mReason = "Confirm fialed on line ";
+            mReason += std::to_string(mLine) + "\n";
+            mReason += "  Expected : " + mExpected + "\n";
+            mReason += "  Actual   : " + mActual;
+        }
+        std::string mExpected;
+        std::string mActual;
+        int mLine;
     };
 
     class MissingException {
@@ -47,6 +75,25 @@ namespace TDD {
     private:
         std::string mExType;
     };
+
+
+//    inline void confirm(
+//            bool expected,
+//            bool actual,
+//            int line) {
+//        if (actual != expected) {
+//            throw BoolConfirmException(expected, line);
+//        }
+//    }
+
+    inline void confirm(
+            bool expected,
+            bool actual,
+            int line) {
+        if (actual != expected) {
+            throw ActualConfirmException(expected, actual, line);
+        }
+    }
 
     class TestBase {
     public:
@@ -210,12 +257,12 @@ TDD_CLASS TDD_INSTANCE(testName);\
 void TDD_CLASS::run ()
 
 #define CONFIRM_FALSE(actual)\
-    TDD:confirm(false,actual,__LINE__) \
+    TDD::confirm(false,actual,__LINE__) \
 
 #define CONFIRM_TRUE(actual)\
-    TDD:confirm(true,actual,__LINE__) \
+    TDD::confirm(true,actual,__LINE__) \
 
 #define CONFIRM(expected, actual)\
-    TDD:confirm(expected ,actual,__LINE__) \
+    TDD::confirm(expected ,actual,__LINE__) \
 
 #endif //INC_01_TEST_H
