@@ -6,6 +6,7 @@
 #include <string_view>
 #include <vector>
 #include <iostream>
+#include <ostream>
 namespace TDD
 {
     class TestBase
@@ -45,16 +46,16 @@ namespace TDD
         static std::vector<TestBase *> tests;
         return tests;
     }
-    inline int runTests ()
+    inline int runTests (std::ostream & output)
     {
-        std::cout << "Running "
+        output << "Running "
         << getTests().size()
         << " test\n";
         int numPassed = 0;
         int numFailed = 0;
         for (auto * test: getTests())
         {
-            std::cout << "-------------------\n"
+            output << "-------------------\n"
             << test->name()
             << std::endl;
             try {
@@ -67,26 +68,26 @@ namespace TDD
             if (test->passed())
             {
                 ++numPassed;
-                std::cout << "Passed"
+                output << "Passed"
                 << std::endl;
             }
             else
             {
                 ++numFailed;
-                std::cout << "Failed\n"
+                output << "Failed\n"
                           << test->reason()
                           << std::endl;
             }
         }
-        std::cout << "-------------------\n";
+        output << "-------------------\n";
         if (numFailed == 0)
         {
-            std::cout << "All tests passed."
+            output << "All tests passed."
             << std::endl;
         }
         else
         {
-            std::cout << "Test passed: " << numPassed
+            output << "Test passed: " << numPassed
             << "\nTest failed: " << numFailed
             << std::endl;
         }
