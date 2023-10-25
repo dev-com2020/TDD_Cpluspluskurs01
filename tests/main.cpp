@@ -3,6 +3,6 @@
 
 int main()
 {
-    test();
+    TDD::runTests();
     return 0;
 }
