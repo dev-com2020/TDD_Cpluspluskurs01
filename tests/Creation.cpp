@@ -14,6 +14,12 @@ TEST("Test that throws unexpectedly can be created")
             "Unexpected exception thrown.");
     throw "Unexpected";
 }
+TEST("Test that throws unexpectedly can be created")
+{
+    setExpectedFailureReason(
+            "Unexpected exception thrown.");
+
+}
 
 
 TEST_EX("Test with throw can be created", int)

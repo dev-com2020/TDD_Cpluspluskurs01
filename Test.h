@@ -79,6 +79,7 @@ namespace TDD {
                << " test\n";
         int numPassed = 0;
         int numFailed = 0;
+        int numMissedFailed = 0;
         for (auto *test: getTests()) {
             output << "-------------------\n"
                    << test->name()
@@ -96,9 +97,16 @@ namespace TDD {
                 test->setFailed("Unexpected exception thrown.");
             }
             if (test->passed()) {
-                ++numPassed;
-                output << "Passed"
-                       << std::endl;
+                if (not test->expectedReason().empty()) {
+                    ++numMissedFailed;
+                    output << "Missed expected failure\n"
+                           << "Test passed but was expected to fail"
+                           << std::endl;
+                } else {
+                    ++numPassed;
+                    output << "Passed"
+                           << std::endl;
+                }
             }
             else if (not test->expectedReason().empty() &&
             test->expectedReason() == test->reason())
@@ -116,13 +124,12 @@ namespace TDD {
             }
         }
         output << "-------------------\n";
-        if (numFailed == 0) {
-            output << "All tests passed."
-                   << std::endl;
-        } else {
-            output << "Test passed: " << numPassed
-                   << "\nTest failed: " << numFailed
-                   << std::endl;
+        output << "Test passed: " << numPassed
+               << "\nTest failed: " << numFailed;
+        if (numMissedFailed != 0) {
+            output << "\nTests failures missed: " << numMissedFailed;
+
+        output << std::endl;
         }
         return numFailed;
     }
