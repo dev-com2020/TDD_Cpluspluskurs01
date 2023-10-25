@@ -48,10 +48,15 @@ namespace TDD {
             return mReason;
         }
 
+        std::string_view expectedReason () const {
+            return mExpectedReason;
+        }
+
         void setFailed(std::string_view reason) {
             mPassed = false;
             mReason = reason;
         }
+
         void setExpectedFailureReason (std::string_view reason) {
             mExpectedReason = reason;
         }
@@ -94,6 +99,15 @@ namespace TDD {
                 ++numPassed;
                 output << "Passed"
                        << std::endl;
+            }
+            else if (not test->expectedReason().empty() &&
+            test->expectedReason() == test->reason())
+            {
+                ++numPassed;
+                output << "Expected failure\n"
+                << test->reason()
+                << std::endl;
+
             } else {
                 ++numFailed;
                 output << "Failed\n"
