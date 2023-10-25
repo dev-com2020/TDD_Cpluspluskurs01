@@ -1,10 +1,14 @@
 //
 // Created by razor on 25.10.2023.
 //
-#include <iostream>
+
 #include "../Test.h"
 
-TEST
+TEST("Test can be created")
 {
-    std::cout << nName << std::endl;
+}
+
+TEST("Test with throw can be created")
+{
+    throw 1;
 }

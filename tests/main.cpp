@@ -3,6 +3,5 @@
 
 int main()
 {
-    TDD::runTests();
-    return 0;
+    return TDD::runTests(std::cout);
 }
