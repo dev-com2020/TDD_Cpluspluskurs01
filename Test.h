@@ -11,6 +11,30 @@
 
 namespace TDD {
 
+    class ConfirmException {
+    public:
+        ConfirmException() = default;
+
+        virtual ~ConfirmException() = default;
+
+        std::string_view reason() const {
+            return mReason;
+        }
+
+    protected:
+        std::string mReason;
+    };
+
+    class BoolConfirmException : public ConfirmException {
+    public:
+        BoolConfirmException(bool expected, int line) {
+            mReason = "Confirm fialed on line ";
+            mReason += std::to_string(line) + "\n";
+            mReason += "  Expected: ";
+            mReason += expected ? "true" : "false";
+        }
+    };
+
     class MissingException {
     public:
         MissingException(std::string_view exType)
@@ -19,6 +43,7 @@ namespace TDD {
         std::string_view exType() const {
             return mExType;
         }
+
     private:
         std::string mExType;
     };
@@ -48,7 +73,7 @@ namespace TDD {
             return mReason;
         }
 
-        std::string_view expectedReason () const {
+        std::string_view expectedReason() const {
             return mExpectedReason;
         }
 
@@ -57,7 +82,7 @@ namespace TDD {
             mReason = reason;
         }
 
-        void setExpectedFailureReason (std::string_view reason) {
+        void setExpectedFailureReason(std::string_view reason) {
             mExpectedReason = reason;
         }
 
@@ -87,7 +112,11 @@ namespace TDD {
             try {
                 test->runEx();
             }
-            catch (MissingException const & ex) {
+            catch (ConfirmException const &ex) {
+                test->setFailed(ex.reason());
+            }
+
+            catch (MissingException const &ex) {
                 std::string message = "Expected exception type ";
                 message += ex.exType();
                 message += " was no thrown.";
@@ -107,14 +136,12 @@ namespace TDD {
                     output << "Passed"
                            << std::endl;
                 }
-            }
-            else if (not test->expectedReason().empty() &&
-            test->expectedReason() == test->reason())
-            {
+            } else if (not test->expectedReason().empty() &&
+                       test->expectedReason() == test->reason()) {
                 ++numPassed;
                 output << "Expected failure\n"
-                << test->reason()
-                << std::endl;
+                       << test->reason()
+                       << std::endl;
 
             } else {
                 ++numFailed;
@@ -129,7 +156,7 @@ namespace TDD {
         if (numMissedFailed != 0) {
             output << "\nTests failures missed: " << numMissedFailed;
 
-        output << std::endl;
+            output << std::endl;
         }
         return numFailed;
     }
@@ -178,7 +205,20 @@ public: \
 }                                         \
 void run () override;                     \
 };                                         \
-} /* end of unnamed namespace */\
+} /* end of unnamed namespace */         \
 TDD_CLASS TDD_INSTANCE(testName);\
 void TDD_CLASS::run ()
+
+#define CONFIRM_FALSE(actual)\
+if (actual)\
+{\
+throw TDD::BoolConfirmException(false, __LINE__);\
+}                                    \
+
+#define CONFIRM_TRUE(actual)\
+if (not actual)\
+{\
+throw TDD::BoolConfirmException(true, __LINE__);\
+}\
+
 #endif //INC_01_TEST_H
