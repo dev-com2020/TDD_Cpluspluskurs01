@@ -52,11 +52,15 @@ namespace TDD {
             mPassed = false;
             mReason = reason;
         }
+        void setExpectedFailureReason (std::string_view reason) {
+            mExpectedReason = reason;
+        }
 
     private:
         std::string nName;
         bool mPassed;
         std::string mReason;
+        std::string mExpectedReason;
     };
 
     inline std::vector<TestBase *> &getTests() {
