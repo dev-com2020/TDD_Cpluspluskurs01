@@ -10,12 +10,29 @@
 #include <ostream>
 
 namespace TDD {
+
+    class MissingException {
+    public:
+        MissingException(std::string_view exType)
+                : mExType(exType) {}
+
+        std::string_view exType() const {
+            return mExType;
+        }
+    private:
+        std::string mExType;
+    };
+
     class TestBase {
     public:
         TestBase(std::string_view name)
                 : nName(name), mPassed(true) {}
 
         virtual ~TestBase() = default;
+
+        virtual void runEx() {
+            run();
+        }
 
         virtual void run() = 0;
 
@@ -58,7 +75,7 @@ namespace TDD {
                    << test->name()
                    << std::endl;
             try {
-                test->run();
+                test->runEx();
             }
             catch (...) {
                 test->setFailed("Unexpected exception thrown.");
@@ -119,7 +136,7 @@ public: \
     {                                      \
         run();\
     }                                      \
-    catch (execptionType const &)          \
+    catch (exceptionType const &)          \
     {                                      \
         return;\
     }                                      \
