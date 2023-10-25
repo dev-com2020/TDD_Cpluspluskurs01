@@ -143,6 +143,7 @@ namespace TDD {
 
 
 #define TEST(testName) \
+namespace {            \
 class TDD_CLASS : public TDD::TestBase \
 { \
 public: \
@@ -150,11 +151,13 @@ public: \
             : TestBase(name) \
     { TDD::getTests().push_back(this);} \
     void run () override; \
-};                       \
+};                     \
+}/* end of unnamed namespace */\
 TDD_CLASS TDD_INSTANCE(testName);\
 void TDD_CLASS::run ()
 
 #define TEST_EX(testName, exceptionType) \
+namespace {                                        \
 class TDD_CLASS : public TDD::TestBase \
 { \
 public: \
@@ -175,6 +178,7 @@ public: \
 }                                         \
 void run () override;                     \
 };                                         \
+} /* end of unnamed namespace */\
 TDD_CLASS TDD_INSTANCE(testName);\
 void TDD_CLASS::run ()
 #endif //INC_01_TEST_H
