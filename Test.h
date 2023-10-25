@@ -210,15 +210,12 @@ TDD_CLASS TDD_INSTANCE(testName);\
 void TDD_CLASS::run ()
 
 #define CONFIRM_FALSE(actual)\
-if (actual)\
-{\
-throw TDD::BoolConfirmException(false, __LINE__);\
-}                                    \
+    TDD:confirm(false,actual,__LINE__) \
 
 #define CONFIRM_TRUE(actual)\
-if (not actual)\
-{\
-throw TDD::BoolConfirmException(true, __LINE__);\
-}\
+    TDD:confirm(true,actual,__LINE__) \
+
+#define CONFIRM(expected, actual)\
+    TDD:confirm(expected ,actual,__LINE__) \
 
 #endif //INC_01_TEST_H
