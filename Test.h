@@ -7,7 +7,7 @@
 
 #include <string_view>
 
-#define TEST1 \
+#define TEST \
 class Test \
 { \
 public: \

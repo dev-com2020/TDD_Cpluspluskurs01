@@ -6,7 +6,7 @@
 #include <iostream>
 #include "../Test.h"
 
-TEST1
+TEST
 {
-    std::cout << mName << std::endl;
+    std::cout << nName << std::endl;
 }
