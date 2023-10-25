@@ -77,6 +77,12 @@ namespace TDD {
             try {
                 test->runEx();
             }
+            catch (MissingException const & ex) {
+                std::string message = "Expected exception type ";
+                message += ex.exType();
+                message += " was no thrown.";
+                test->setFailed(message);
+            }
             catch (...) {
                 test->setFailed("Unexpected exception thrown.");
             }
@@ -142,8 +148,8 @@ public: \
     }                                      \
     throw TDD::MissingException(#exceptionType); \
 }                                         \
-void run () override;                                           \
-};                       \
+void run () override;                     \
+};                                         \
 TDD_CLASS TDD_INSTANCE(testName);\
 void TDD_CLASS::run ()
 #endif //INC_01_TEST_H
