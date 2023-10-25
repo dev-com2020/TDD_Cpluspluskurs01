@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../Test.h"
 
-int main()
+void main()
 {
-    return TDD::runTests(std::cout);
+    return TDD::runTests();
 }
