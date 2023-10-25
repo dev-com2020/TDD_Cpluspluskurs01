@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../Test.h"
 
-void main()
+int main()
 {
     return TDD::runTests();
 }
